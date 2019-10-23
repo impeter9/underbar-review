@@ -174,6 +174,28 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    if (arguments[2] === undefined){
+      accumulator = collection[0];
+      var memo = accumulator;
+      for (var i = 1; i < collection.length; i++){
+        memo = iterator(memo, collection[i]);
+      }
+      return memo;
+    }
+    if(Array.isArray(collection)){
+      var memo = accumulator;
+      for (var i = 0; i < collection.length; i++){
+        memo = iterator(memo, collection[i]);
+      }
+      return memo;
+    } else if (typeof collection === 'object'){
+      var memo = accumulator;
+      for (var key in collection){
+        memo = iterator(memo, collection[key]);
+      }
+      return memo;
+    }
+
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -192,6 +214,23 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    return _.reduce(collection, function(memo, item){
+      // var allTrue = memo;
+      // if (iterator(item) !== false){
+      //   return true
+      // } else {
+      //   return tr
+      // }
+      if (memo === false){
+        return false;
+      } else {
+        if(iterator(item)){
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }, true)
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
